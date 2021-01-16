@@ -1,0 +1,23 @@
+{
+  "name": "nene-quest",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/rokina/nene-quest.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/rokina/nene-quest/issues"
+  },
+  "homepage": "https://github.com/rokina/nene-quest#readme",
+  "devDependencies": {
+    "phaser": "^3.52.0"
+  }
+}
