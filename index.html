@@ -44,7 +44,8 @@
 			this.load.image('ground', 'assets/ground.png');
 			this.load.image('sky', 'assets/sky.png');
 			this.load.image('cloud', 'assets/cloud.png');
-			this.load.image('chara', 'assets/chara.png');
+			this.load.image('chara', 'assets/people.png');
+			this.load.image('kusa', 'assets/kusa.png');
 			// this.load.spritesheet('dude', 'assets/dude.png', { frameWidth: 32, frameHeight: 48 });
 		}
 
@@ -52,10 +53,11 @@
 			this.add.image(0, 0, 'cloud').setOrigin(0, 0);
 			this.add.image(0, 311, 'ground').setOrigin(0, 0);
 			this.add.image(0, 0, 'sky').setOrigin(0, 0); // TODO:当たり判定の関係で無理やり実装
+			this.add.image(0, 80, 'kusa').setOrigin(0, 0);
 
 			platforms = this.physics.add.staticGroup();
 
-			platforms.create(720, 0, 'sky');
+			// platforms.create(720, 0, 'sky');
 
 			player = this.physics.add.sprite(100, 450, 'chara');
 
