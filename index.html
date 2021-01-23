@@ -36,6 +36,7 @@
 		var player;
 		var platforms;
 		var cursors;
+		var iter = -30;
 
 		var game = new Phaser.Game(config);
 
@@ -51,10 +52,10 @@
 		function create() {
 			this.add.image(0, 0, 'cloud').setOrigin(0, 0);
 			this.add.image(0, 311, 'ground').setOrigin(0, 0);
-			this.add.image(0, 0, 'sky').setOrigin(0, 0); // TODO:当たり判定の関係で無理やり実装
+			this.add.image(0, 0, 'sky').setOrigin(0, 0);
 			this.add.image(0, 80, 'kusa').setOrigin(0, 0);
 
-			platforms = this.physics.add.staticGroup();
+			// platforms = this.physics.add.staticGroup();
 
 			player = this.physics.add.sprite(100, 450, 'chara');
 
@@ -63,7 +64,14 @@
 			// キー入力の取得
 			cursors = this.input.keyboard.createCursorKeys();
 
-			this.physics.add.collider(player, platforms);
+			// this.physics.add.collider(player, platforms);
+
+			// var minimapCamera = this.cameras.add(512, 0, 512, 384);
+			// minimapCamera.zoom = 0.5;
+
+			mainCamera = this.cameras.main;
+			// mainCamera.startFollow(player, true);
+			// console.log(mainCamera.scrollX);
 		}
 
 		function update() {
@@ -84,6 +92,10 @@
 				player.setVelocityX(0);
 				player.setVelocityY(0);
 			}
+			// 強制スクロール
+			mainCamera.scrollX = iter;
+			iter += 1;
+			// console.log(mainCamera.scrollX);
 		}
 
 	</script>
