@@ -4,7 +4,7 @@
 <head>
 	<meta charset="UTF-8" />
 	<title>Making your first Phaser 3 Game - Part 1</title>
-	<script src="//cdn.jsdelivr.net/npm/phaser@3.11.0/dist/phaser.js"></script>
+	<script src="//cdn.jsdelivr.net/npm/phaser@3.52.0/dist/phaser.min.js"></script>
 	<style type="text/css">
 		body {
 			margin: 0;
@@ -23,7 +23,7 @@
 			physics: {
 				default: 'arcade',
 				arcade: {
-					debug: false
+					debug: true
 				}
 			},
 			scene: {
@@ -37,6 +37,9 @@
 		var platforms;
 		var cursors;
 		var iter = -30;
+
+		var background;
+		var layer1;
 
 		var game = new Phaser.Game(config);
 
@@ -53,7 +56,20 @@
 			this.add.image(0, 0, 'cloud').setOrigin(0, 0);
 			this.add.image(0, 311, 'ground').setOrigin(0, 0);
 			this.add.image(0, 0, 'sky').setOrigin(0, 0);
-			this.add.image(0, 80, 'kusa').setOrigin(0, 0);
+			this.add.image(720, 200, 'kusa');
+
+			var map = this.make.tilemap({ width: 1438, height: 230, tileWidth: 1438, tileHeight: 230 });
+
+			var tiles = map.addTilesetImage('kusa', null, 1438, 230);
+
+			var layer = map.createBlankLayer('layer1', tiles);
+
+			layer.randomize(0, -80, map.width, map.height, [0, 1, 2, 3]);
+			// layer.putTileAt('layer1', 0, 80);
+
+			console.log(layer);
+
+			// background = this.add.tileSprite(0, 311, 1440, 400, "ground").setOrigin(0, 0);
 
 			// platforms = this.physics.add.staticGroup();
 
@@ -72,10 +88,13 @@
 			mainCamera = this.cameras.main;
 			// mainCamera.startFollow(player, true);
 			// console.log(mainCamera.scrollX);
+			// console.log(background);
 		}
 
 		function update() {
 			// TODO:意図しない斜め入力が発生
+			// background.x += 1;
+
 			if (cursors.left.isDown) {
 				player.setVelocityX(-160);
 			}
@@ -94,7 +113,7 @@
 			}
 			// 強制スクロール
 			mainCamera.scrollX = iter;
-			iter += 1;
+			iter += 3;
 			// console.log(mainCamera.scrollX);
 		}
 
