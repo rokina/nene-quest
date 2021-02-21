@@ -39,10 +39,11 @@
 		let platforms;
 		let cursors;
 		let hp;
-		let iter = -30;
-		let colliderActivated = true;
 		let background;
 		let layer1;
+		let colliderActivated = true;
+		let iter = -30;
+		let count = 0;
 
 		let game = new Phaser.Game(config);
 
@@ -67,7 +68,6 @@
 			let layer = map.createBlankLayer('layer1', tiles);
 
 			player = this.physics.add.sprite(100, 450, 'chara');
-			inoshishi = this.physics.add.sprite(1400, 400, 'inoshishi');
 			text = this.add.text(20, 20, '', { font: '20px Courier', fill: '#333' });
 			hp = this.data.set('hp', 100);
 
@@ -77,29 +77,32 @@
 
 			player.setCollideWorldBounds(true);
 
-			this.physics.add.overlap(player, inoshishi, collisionDetection, () => {
-				return colliderActivated;
-			}, this);
-
 			// キー入力の取得
 			cursors = this.input.keyboard.createCursorKeys();
 
 			this.inoshishis = this.physics.add.group();
 
-			for (let y = 0; y < 4; y++) {
-				for (let x = 0; x < 10; x++) {
-					let inoshishi = this.inoshishis.create(x * 200, y * 150, "inoshishi");
-					inoshishi.setOrigin(0, 0);
+			// イノシシ生産工場
+			const interval = 500;
+			let Wild_boar_production = setInterval(() => {
+				let pos_x = getRandomInt(400, 1000);
+				let pos_y = getRandomInt(350, 800);
+				countUp();
+				if (count === 5) {
+					clearInterval(Wild_boar_production);
 				}
-			}
-			this.inoshishis.incX(100);
-			this.inoshishis.incY(50);
+				inoshishi = this.inoshishis.create(pos_x, pos_y, "inoshishi");
+				this.physics.add.overlap(player, inoshishi, collisionDetection, () => {
+					return colliderActivated;
+				}, this);
+			}, interval);
+
 		}
 
 		function update() {
 			// TODO:意図しない斜め入力が発生
 			if (cursors.left.isDown) {
-				player.setVelocityX(-60);
+				player.setVelocityX(-160);
 			}
 			else if (cursors.right.isDown) {
 				player.setVelocityX(160);
@@ -116,18 +119,33 @@
 			}
 
 			// イノシシ移動
-			inoshishi.setVelocityX(-300);
+			// inoshishi.setVelocityX(-300);
+			// inoshishi.physics.MoveTo(100, 100);
+			// console.log(inoshishi);
 		}
 
 		// 衝突判定
 		function collisionDetection(player, inoshishi) {
 			const DAMAGE = 10;
+			const INVINCIBLE_TIME = 1000;
 			colliderActivated = false;
-			console.log("test");
 			hp.list.hp -= DAMAGE;
 			text.setText([
 				'HP:' + hp.list.hp
 			]);
+			setTimeout(() => {
+				colliderActivated = true;
+			}, INVINCIBLE_TIME);
+		}
+
+		function getRandomInt(min, max) {
+			min = Math.ceil(min);
+			max = Math.floor(max);
+			return Math.floor(Math.random() * (max - min) + min);
+		}
+
+		function countUp() {
+			count++
 		}
 
 	</script>
