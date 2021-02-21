@@ -16,7 +16,7 @@
 
 	<script type="text/javascript">
 
-		var config = {
+		let config = {
 			type: Phaser.AUTO,
 			width: 1440,
 			height: 711,
@@ -33,15 +33,18 @@
 			}
 		};
 
-		var player;
-		var platforms;
-		var cursors;
-		var iter = -30;
+		let player;
+		let inoshishi;
+		let text;
+		let platforms;
+		let cursors;
+		let hp;
+		let iter = -30;
+		let colliderActivated = true;
+		let background;
+		let layer1;
 
-		var background;
-		var layer1;
-
-		var game = new Phaser.Game(config);
+		let game = new Phaser.Game(config);
 
 		function preload() {
 			// アセットの用意
@@ -50,6 +53,7 @@
 			this.load.image('cloud', 'assets/cloud.png');
 			this.load.image('chara', 'assets/people.png');
 			this.load.image('kusa', 'assets/kusa.png');
+			this.load.image('inoshishi', 'assets/inoshishi.png');
 		}
 
 		function create() {
@@ -58,45 +62,44 @@
 			this.add.image(0, 0, 'sky').setOrigin(0, 0);
 			this.add.image(720, 200, 'kusa');
 
-			var map = this.make.tilemap({ width: 1438, height: 230, tileWidth: 1438, tileHeight: 230 });
-
-			var tiles = map.addTilesetImage('kusa', null, 1438, 230);
-
-			var layer = map.createBlankLayer('layer1', tiles);
-
-			layer.randomize(0, -80, map.width, map.height, [0, 1, 2, 3]);
-			// layer.putTileAt('layer1', 0, 80);
-
-			console.log(layer);
-
-			// background = this.add.tileSprite(0, 311, 1440, 400, "ground").setOrigin(0, 0);
-
-			// platforms = this.physics.add.staticGroup();
+			let map = this.make.tilemap({ width: 1438, height: 230, tileWidth: 1438, tileHeight: 230 });
+			let tiles = map.addTilesetImage('kusa', null, 1438, 230);
+			let layer = map.createBlankLayer('layer1', tiles);
 
 			player = this.physics.add.sprite(100, 450, 'chara');
+			inoshishi = this.physics.add.sprite(1400, 400, 'inoshishi');
+			text = this.add.text(20, 20, '', { font: '20px Courier', fill: '#333' });
+			hp = this.data.set('hp', 100);
+
+			text.setText([
+				'HP:' + hp.list.hp
+			]);
 
 			player.setCollideWorldBounds(true);
+
+			this.physics.add.overlap(player, inoshishi, collisionDetection, () => {
+				return colliderActivated;
+			}, this);
 
 			// キー入力の取得
 			cursors = this.input.keyboard.createCursorKeys();
 
-			// this.physics.add.collider(player, platforms);
+			this.inoshishis = this.physics.add.group();
 
-			// var minimapCamera = this.cameras.add(512, 0, 512, 384);
-			// minimapCamera.zoom = 0.5;
-
-			mainCamera = this.cameras.main;
-			// mainCamera.startFollow(player, true);
-			// console.log(mainCamera.scrollX);
-			// console.log(background);
+			for (let y = 0; y < 4; y++) {
+				for (let x = 0; x < 10; x++) {
+					let inoshishi = this.inoshishis.create(x * 200, y * 150, "inoshishi");
+					inoshishi.setOrigin(0, 0);
+				}
+			}
+			this.inoshishis.incX(100);
+			this.inoshishis.incY(50);
 		}
 
 		function update() {
 			// TODO:意図しない斜め入力が発生
-			// background.x += 1;
-
 			if (cursors.left.isDown) {
-				player.setVelocityX(-160);
+				player.setVelocityX(-60);
 			}
 			else if (cursors.right.isDown) {
 				player.setVelocityX(160);
@@ -111,10 +114,20 @@
 				player.setVelocityX(0);
 				player.setVelocityY(0);
 			}
-			// 強制スクロール
-			mainCamera.scrollX = iter;
-			iter += 3;
-			// console.log(mainCamera.scrollX);
+
+			// イノシシ移動
+			inoshishi.setVelocityX(-300);
+		}
+
+		// 衝突判定
+		function collisionDetection(player, inoshishi) {
+			const DAMAGE = 10;
+			colliderActivated = false;
+			console.log("test");
+			hp.list.hp -= DAMAGE;
+			text.setText([
+				'HP:' + hp.list.hp
+			]);
 		}
 
 	</script>
