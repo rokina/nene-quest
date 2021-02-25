@@ -48,7 +48,7 @@
 		let game = new Phaser.Game(config);
 
 		function preload() {
-			// アセットの用意
+			// 画像の読み込み
 			this.load.image('ground', 'assets/ground.png');
 			this.load.image('sky', 'assets/sky.png');
 			this.load.image('cloud', 'assets/cloud.png');
@@ -58,14 +58,11 @@
 		}
 
 		function create() {
+			// 画像をフィールドに描画
 			this.add.image(0, 0, 'cloud').setOrigin(0, 0);
 			this.add.image(0, 311, 'ground').setOrigin(0, 0);
 			this.add.image(0, 0, 'sky').setOrigin(0, 0);
-			this.add.image(720, 200, 'kusa');
-
-			let map = this.make.tilemap({ width: 1438, height: 230, tileWidth: 1438, tileHeight: 230 });
-			let tiles = map.addTilesetImage('kusa', null, 1438, 230);
-			let layer = map.createBlankLayer('layer1', tiles);
+			this.add.image(0, 81, 'kusa').setOrigin(0, 0);
 
 			player = this.physics.add.sprite(100, 450, 'chara');
 			text = this.add.text(20, 20, '', { font: '20px Courier', fill: '#333' });
@@ -88,7 +85,7 @@
 				let pos_x = getRandomInt(400, 1000);
 				let pos_y = getRandomInt(350, 800);
 				countUp();
-				if (count === 5) {
+				if (count === 1) {
 					clearInterval(Wild_boar_production);
 				}
 				inoshishi = this.inoshishis.create(pos_x, pos_y, "inoshishi");
@@ -96,7 +93,6 @@
 					return colliderActivated;
 				}, this);
 			}, interval);
-
 		}
 
 		function update() {
@@ -122,6 +118,7 @@
 			// inoshishi.setVelocityX(-300);
 			// inoshishi.physics.MoveTo(100, 100);
 			// console.log(inoshishi);
+			// console.log('inoshishi:', inoshishi);
 		}
 
 		// 衝突判定
