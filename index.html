@@ -34,7 +34,6 @@
 		};
 
 		let player;
-		let inoshishi;
 		let text;
 		let platforms;
 		let cursors;
@@ -54,7 +53,7 @@
 			this.load.image('cloud', 'assets/cloud.png');
 			this.load.image('chara', 'assets/chara.png');
 			this.load.image('kusa', 'assets/kusa.png');
-			this.load.image('inoshishi', 'assets/inoshishi.png');
+			this.load.image('wildboar', 'assets/wildboar.png');
 		}
 
 		function create() {
@@ -82,23 +81,31 @@
 			// キー入力の取得
 			cursors = this.input.keyboard.createCursorKeys();
 
-			this.inoshishis = this.physics.add.group();
-			console.log('this:', this.inoshishis);
+			// groupを作成
+			wildboars = this.physics.add.group();
+			// イノシシを生成
+			wild_boar_generation = setInterval(wildBoarGeneration, 3000, wildboars);
+			// clearInterval(ino);
+			// console.log('this:', wildboars);
+			// setInterval(() => {
+			// 	let test = getRandomInt(1000, 1500);
+			// 	console.log('test:', test);
+			// }, 1000);
 
 			// イノシシ生産工場
-			let interval = 1000;
-			let Wild_boar_production = setInterval(() => {
-				let pos_x = getRandomInt(1500, 1500);
-				let pos_y = getRandomInt(350, 650);
-				countUp();
-				if (count === 100) {
-					clearInterval(Wild_boar_production);
-				}
-				inoshishi = this.inoshishis.create(pos_x, pos_y, "inoshishi");
-				this.physics.add.overlap(player, inoshishi, collisionDetection, () => {
-					return colliderActivated;
-				}, this);
-			}, interval);
+			// let interval = 1000;
+			// let Wild_boar_production = setInterval(() => {
+			// 	let pos_x = getRandomInt(1500, 1500);
+			// 	let pos_y = getRandomInt(350, 650);
+			// 	countUp();
+			// 	if (count === 100) {
+			// 		clearInterval(Wild_boar_production);
+			// 	}
+			// 	wildboar = wildboars.create(pos_x, pos_y, "wildboar");
+			// 	this.physics.add.overlap(player, wildboar, collisionDetection, () => {
+			// 		return colliderActivated;
+			// 	}, this);
+			// }, interval);
 		}
 
 		function update() {
@@ -120,16 +127,24 @@
 				player.setVelocityY(0);
 			}
 
+			if (count === 10) {
+				clearInterval(wild_boar_generation);
+			}
+
 			// イノシシ移動
-			this.inoshishis.setVelocityX(-300);
-			// inoshishi.setVelocityX(-300);
-			// inoshishi.physics.MoveTo(100, 100);
-			// console.log(inoshishi);
-			// console.log('inoshishi:', inoshishi);
+			wildboars.setVelocityX(-400);
+		}
+
+		// イノシシ生成器
+		function wildBoarGeneration(item) {
+			const pos_x = getRandomInt(1500, 1500);
+			const pos_y = getRandomInt(350, 650);
+			wildboar = item.create(pos_x, pos_y, "wildboar");
+			count++;
 		}
 
 		// 衝突判定
-		function collisionDetection(player, inoshishi) {
+		function collisionDetection(player, wildboar) {
 			const DAMAGE = 10;
 			const INVINCIBLE_TIME = 1000;
 			colliderActivated = false;
@@ -152,11 +167,6 @@
 			min = Math.ceil(min);
 			max = Math.floor(max);
 			return Math.floor(Math.random() * (max - min) + min);
-		}
-
-		// カウントアップ
-		function countUp() {
-			count++
 		}
 
 	</script>
