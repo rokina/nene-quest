@@ -64,7 +64,11 @@
 			this.add.image(0, 0, 'sky').setOrigin(0, 0);
 			this.add.image(0, 81, 'kusa').setOrigin(0, 0);
 
+			// プレイヤーの定義
 			player = this.physics.add.sprite(100, 450, 'chara');
+			// プレイヤーの重ね順を最前面に
+			player.depth = 1;
+			// HPのテキスト定義
 			text = this.add.text(20, 20, '', { font: '20px Courier', fill: '#333' });
 			hp = this.data.set('hp', 100);
 
@@ -72,20 +76,22 @@
 				'HP:' + hp.list.hp
 			]);
 
+			// プレイヤーとフィールドに当たり判定追加
 			player.setCollideWorldBounds(true);
 
 			// キー入力の取得
 			cursors = this.input.keyboard.createCursorKeys();
 
 			this.inoshishis = this.physics.add.group();
+			console.log('this:', this.inoshishis);
 
 			// イノシシ生産工場
-			const interval = 500;
+			let interval = 1000;
 			let Wild_boar_production = setInterval(() => {
-				let pos_x = getRandomInt(400, 1000);
-				let pos_y = getRandomInt(350, 800);
+				let pos_x = getRandomInt(1500, 1500);
+				let pos_y = getRandomInt(350, 650);
 				countUp();
-				if (count === 1) {
+				if (count === 100) {
 					clearInterval(Wild_boar_production);
 				}
 				inoshishi = this.inoshishis.create(pos_x, pos_y, "inoshishi");
@@ -115,6 +121,7 @@
 			}
 
 			// イノシシ移動
+			this.inoshishis.setVelocityX(-300);
 			// inoshishi.setVelocityX(-300);
 			// inoshishi.physics.MoveTo(100, 100);
 			// console.log(inoshishi);
@@ -126,21 +133,28 @@
 			const DAMAGE = 10;
 			const INVINCIBLE_TIME = 1000;
 			colliderActivated = false;
+			// HPの処理は分割する
 			hp.list.hp -= DAMAGE;
 			text.setText([
 				'HP:' + hp.list.hp
 			]);
+			// ゲームオーバー処理分割する
+			if (hp.list.hp === 0) {
+				console.log("game end");
+			}
 			setTimeout(() => {
 				colliderActivated = true;
 			}, INVINCIBLE_TIME);
 		}
 
+		// 乱数生成器
 		function getRandomInt(min, max) {
 			min = Math.ceil(min);
 			max = Math.floor(max);
 			return Math.floor(Math.random() * (max - min) + min);
 		}
 
+		// カウントアップ
 		function countUp() {
 			count++
 		}
