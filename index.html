@@ -43,6 +43,7 @@
 		let colliderActivated = true;
 		let iter = -30;
 		let count = 0;
+		let size = 100;
 
 		let game = new Phaser.Game(config);
 
@@ -71,9 +72,13 @@
 			text = this.add.text(20, 20, '', { font: '20px Courier', fill: '#333' });
 			hp = this.data.set('hp', 100);
 
-			text.setText([
-				'HP:' + hp.list.hp
-			]);
+			// text.setText([
+			// 	'HP:' + hp.list.hp
+			// ]);
+			this.debug = this.add.graphics();
+
+			this.debug.fillStyle(0x2d2d2d);
+			this.debug.fillRect(100, 50, size, 30);
 
 			// プレイヤーとフィールドに当たり判定追加
 			player.setCollideWorldBounds(true);
@@ -85,27 +90,10 @@
 			wildboars = this.physics.add.group();
 			// イノシシを生成
 			wild_boar_generation = setInterval(wildBoarGeneration, 3000, wildboars);
-			// clearInterval(ino);
-			// console.log('this:', wildboars);
-			// setInterval(() => {
-			// 	let test = getRandomInt(1000, 1500);
-			// 	console.log('test:', test);
-			// }, 1000);
-
-			// イノシシ生産工場
-			// let interval = 1000;
-			// let Wild_boar_production = setInterval(() => {
-			// 	let pos_x = getRandomInt(1500, 1500);
-			// 	let pos_y = getRandomInt(350, 650);
-			// 	countUp();
-			// 	if (count === 100) {
-			// 		clearInterval(Wild_boar_production);
-			// 	}
-			// 	wildboar = wildboars.create(pos_x, pos_y, "wildboar");
-			// 	this.physics.add.overlap(player, wildboar, collisionDetection, () => {
-			// 		return colliderActivated;
-			// 	}, this);
-			// }, interval);
+			// イノシシとプレイヤーに当たり判定を追加
+			this.physics.add.overlap(player, wildboars, collisionDetection, () => {
+				return colliderActivated;
+			}, this);
 		}
 
 		function update() {
@@ -133,6 +121,11 @@
 
 			// イノシシ移動
 			wildboars.setVelocityX(-400);
+
+			// this.debug.fillStyle(0x2dff2d);
+			// this.debug.fillRect(100, 50, size, 30);
+
+			// this.debug.fillRect(100, 50, size - 10, 30);
 		}
 
 		// イノシシ生成器
@@ -143,20 +136,31 @@
 			count++;
 		}
 
+		function damageHandling(self, size) {
+			console.log('this:', this);
+			console.log('self:', self);
+			console.log('size:', size);
+			self.debug.fillRect(100, 50, size, 30);
+		}
+
 		// 衝突判定
 		function collisionDetection(player, wildboar) {
 			const DAMAGE = 10;
 			const INVINCIBLE_TIME = 1000;
 			colliderActivated = false;
+			size -= DAMAGE;
+			damageHandling(this, size);
+			// console.log('size:', size);
+			// this.debug.fillRect(100, 50, size, 30);
 			// HPの処理は分割する
-			hp.list.hp -= DAMAGE;
-			text.setText([
-				'HP:' + hp.list.hp
-			]);
+			// hp.list.hp -= DAMAGE;
+			// text.setText([
+			// 	'HP:' + hp.list.hp
+			// ]);
 			// ゲームオーバー処理分割する
-			if (hp.list.hp === 0) {
-				console.log("game end");
-			}
+			// if (hp.list.hp === 0) {
+			// 	console.log("game end");
+			// }
 			setTimeout(() => {
 				colliderActivated = true;
 			}, INVINCIBLE_TIME);
